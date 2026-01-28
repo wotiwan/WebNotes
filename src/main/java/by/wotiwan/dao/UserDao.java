@@ -2,6 +2,8 @@ package by.wotiwan.dao;
 
 import by.wotiwan.dto.UserFilter;
 import by.wotiwan.entity.User;
+import by.wotiwan.exception.DuplicateEmailException;
+import by.wotiwan.exception.DuplicateNicknameException;
 import by.wotiwan.utils.ConnectionManager;
 
 import java.sql.*;
@@ -56,7 +58,14 @@ public class UserDao implements Dao<User, Long, UserFilter> {
             return user;
 
         } catch (SQLException e) {
-            throw new RuntimeException(e); // TODO: своё искл
+
+            if (e.getMessage().contains("users_email_key")) {
+                throw new DuplicateEmailException();
+            }
+            if (e.getMessage().contains("users_nickname_key")) {
+                throw new DuplicateNicknameException();
+            }
+            throw new RuntimeException(e);
         }
 
     }
