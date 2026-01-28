@@ -2,9 +2,12 @@ package by.wotiwan.service;
 
 import by.wotiwan.dao.UserDao;
 import by.wotiwan.dto.CreateUserDto;
+import by.wotiwan.dto.LoginUserDto;
 import by.wotiwan.dto.UserDto;
+import by.wotiwan.entity.User;
 import by.wotiwan.exception.DuplicateEmailException;
 import by.wotiwan.exception.DuplicateNicknameException;
+import by.wotiwan.exception.LoginException;
 import by.wotiwan.exception.RegistrationException;
 import by.wotiwan.mapper.CreateUserMapper;
 import by.wotiwan.mapper.UserMapper;
@@ -34,6 +37,17 @@ public class UserService {
         } catch (DuplicateNicknameException e) {
             throw new RegistrationException("This nickname alredy taken!");
         }
+    }
+
+    public UserDto login(LoginUserDto loginUserDto) {
+        User foundUser = userDao.findByEmailPassword(loginUserDto.email(), loginUserDto.password());
+        System.out.println(foundUser);
+        if (foundUser.getId() != null) {
+            return userMapper.mapFrom(foundUser);
+        } else {
+            throw new LoginException();
+        }
+
     }
 
     UserService() {}

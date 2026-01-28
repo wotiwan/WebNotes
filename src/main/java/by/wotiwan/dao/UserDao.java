@@ -31,6 +31,10 @@ public class UserDao implements Dao<User, Long, UserFilter> {
             select * from users where id = ?
             """;
 
+    private final static String FIND_BY_EMAIL_PASSWORD_SQL = """
+            select * from users where email = ? and password = ?;
+            """;
+
     private final static String UPDATE_SQL = """
             update users set nickname = ?, email = ?, password = ? where id = ?;
             """;
@@ -89,6 +93,28 @@ public class UserDao implements Dao<User, Long, UserFilter> {
 
         } catch (SQLException e) {
             throw new RuntimeException(e); // TODO: своё искл
+        }
+
+    }
+
+    public User findByEmailPassword(String email, String password) {
+
+        User user = new User();
+
+        try (Connection connection = connectionManager.get();
+        PreparedStatement statement = connection.prepareStatement(FIND_BY_EMAIL_PASSWORD_SQL)) {
+
+            statement.setString(1, email);
+            statement.setString(2, password);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                user = buildUser(resultSet);
+            }
+
+            return user;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
 
     }
