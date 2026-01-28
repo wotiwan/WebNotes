@@ -23,36 +23,32 @@
 <div class="top-bar">
     <h2>Мои заметки</h2>
 
-    <!-- Кнопка выхода -->
     <form action="/logout" method="post">
-        <button type="submit">Выйти</button>
+        <button class="logout-btn" type="submit">Выйти</button>
     </form>
 </div>
 
-<!-- Создание новой заметки -->
-<h3>Новая заметка</h3>
-<form action="/createNote" method="post">
-    <textarea name="description" placeholder="Введите описание заметки..." required></textarea><br><br>
-    <button type="submit">Создать заметку</button>
-</form>
+<div class="create-box">
+    <h3>Новая заметка</h3>
+    <form action="/createNote" method="post">
+        <textarea name="description" placeholder="Введите описание заметки..." required></textarea><br><br>
+        <button type="submit">Создать заметку</button>
+    </form>
+</div>
 
-<hr>
-
-<!-- Список заметок -->
-<h3>Существующие заметки</h3>
+<h3 class="notes-title">Существующие заметки</h3>
 
 <c:if test="${empty notes}">
-    <p>Заметок пока нет.</p>
+    <p class="empty">Заметок пока нет.</p>
 </c:if>
 
 <c:forEach var="note" items="${notes}">
     <div class="note">
-        <div>${note.description}</div>
+        <div class="note-text">${note.noteDescription()}</div>
 
-        <!-- Удаление заметки -->
         <form action="/deleteNote" method="post">
-            <input type="hidden" name="id" value="${note.id}">
-            <button type="submit">Удалить</button>
+            <input type="hidden" name="id" value="${note.id()}">
+            <button class="delete-btn" type="submit">Удалить</button>
         </form>
     </div>
 </c:forEach>
