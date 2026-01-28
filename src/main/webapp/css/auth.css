@@ -1,0 +1,113 @@
+/* ===== Сброс ===== */
+* {
+    box-sizing: border-box;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* ===== Фон ===== */
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ===== Карточка ===== */
+.auth-card {
+    background: white;
+    padding: 32px 28px;
+    width: 100%;
+    max-width: 380px;
+    border-radius: 18px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+
+/* ===== Заголовок ===== */
+.auth-card h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* ===== Ошибка ===== */
+.error {
+    background: #fee2e2;
+    color: #991b1b;
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    text-align: center;
+}
+
+/* ===== Поля ===== */
+.form-group {
+    margin-bottom: 16px;
+}
+
+label {
+    font-size: 14px;
+    color: #374151;
+}
+
+input {
+    width: 100%;
+    margin-top: 6px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    outline: none;
+    font-size: 14px;
+}
+
+input:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 2px rgba(79,70,229,0.15);
+}
+
+/* ===== Кнопка ===== */
+button {
+    width: 100%;
+    margin-top: 10px;
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    background: #4f46e5;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover {
+    background: #4338ca;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+/* ===== Ссылка под формой ===== */
+.auth-footer {
+    margin-top: 16px;
+    text-align: center;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.auth-footer a {
+    color: #4f46e5;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+.error ul {
+    margin: 0;
+    padding-left: 18px;
+    text-align: left;
+}

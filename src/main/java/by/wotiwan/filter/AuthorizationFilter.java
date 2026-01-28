@@ -12,7 +12,7 @@ import java.util.Set;
 @WebFilter("/*")
 public class AuthorizationFilter implements Filter {
 
-    private final static Set<String> PUBLIC_PATH = Set.of("/login", "/register");
+    private final static Set<String> PUBLIC_PATH = Set.of("/login", "/registration", "/css/auth.css", "/css/registration.css");
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {

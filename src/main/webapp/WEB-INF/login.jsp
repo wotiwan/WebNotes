@@ -7,31 +7,43 @@
 
 <!DOCTYPE html>
 <html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>Вход</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css">
 </head>
 <body>
 
-<h2>Форма входа</h2>
+<div class="auth-card">
+    <h2>Форма входа</h2>
 
-<c:if test="${not empty requestScope.errors}">
-    <h1>${requestScope.errors}</h1>
-</c:if>
+    <c:if test="${not empty requestScope.errors}">
+        <div class="error">${requestScope.errors}</div>
+    </c:if>
 
-<form action="/login" method="post">
-    <div>
-        <label>Email:</label><br>
-        <input type="email" name="email" id="email" required>
+    <form action="/login" method="post">
+
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" name="email" required>
+        </div>
+
+        <div class="form-group">
+            <label>Пароль</label>
+            <input type="password" name="password" required>
+        </div>
+
+        <button type="submit">Войти</button>
+    </form>
+
+    <div class="auth-footer">
+        Нет аккаунта?
+        <a href="/registration">Зарегистрироваться</a>
     </div>
-    <br>
-    <div>
-        <label>Пароль:</label><br>
-        <input type="password" name="password" id="password"required>
-    </div>
-    <br>
-    <button type="submit">Войти</button>
-</form>
+</div>
+
 
 </body>
+
 </html>

@@ -9,6 +9,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Заметки</title>
+    <link rel="stylesheet" href="/css/notes.css">
     <style>
         body { font-family: Arial, sans-serif; margin: 40px; }
         .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
@@ -19,39 +20,39 @@
     </style>
 </head>
 <body>
+<div class="page">
+    <div class="top-bar">
+        <h2>Мои заметки</h2>
 
-<div class="top-bar">
-    <h2>Мои заметки</h2>
-
-    <form action="/logout" method="post">
-        <button class="logout-btn" type="submit">Выйти</button>
-    </form>
-</div>
-
-<div class="create-box">
-    <h3>Новая заметка</h3>
-    <form action="/createNote" method="post">
-        <textarea name="description" placeholder="Введите описание заметки..." required></textarea><br><br>
-        <button type="submit">Создать заметку</button>
-    </form>
-</div>
-
-<h3 class="notes-title">Существующие заметки</h3>
-
-<c:if test="${empty notes}">
-    <p class="empty">Заметок пока нет.</p>
-</c:if>
-
-<c:forEach var="note" items="${notes}">
-    <div class="note">
-        <div class="note-text">${note.noteDescription()}</div>
-
-        <form action="/deleteNote" method="post">
-            <input type="hidden" name="id" value="${note.id()}">
-            <button class="delete-btn" type="submit">Удалить</button>
+        <form action="/logout" method="post">
+            <button class="logout-btn" type="submit">Выйти</button>
         </form>
     </div>
-</c:forEach>
 
+    <div class="create-box">
+        <h3>Новая заметка</h3>
+        <form action="/createNote" method="post">
+            <textarea name="description" placeholder="Введите описание заметки..." required></textarea><br><br>
+            <button type="submit">Создать заметку</button>
+        </form>
+    </div>
+
+    <h3 class="notes-title">Существующие заметки</h3>
+
+    <c:if test="${empty notes}">
+        <p class="empty">Заметок пока нет.</p>
+    </c:if>
+
+    <c:forEach var="note" items="${notes}">
+        <div class="note">
+            <div class="note-text">${note.noteDescription()}</div>
+
+            <form action="/deleteNote" method="post">
+                <input type="hidden" name="id" value="${note.id()}">
+                <button class="delete-btn" type="submit">Удалить</button>
+            </form>
+        </div>
+    </c:forEach>
+</div>
 </body>
 </html>

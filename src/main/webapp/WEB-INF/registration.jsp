@@ -6,40 +6,52 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>Регистрация</title>
+    <link rel="stylesheet" href="/css/auth.css">
 </head>
 <body>
 
-<h2>Форма регистрации</h2>
+<div class="auth-card">
+    <h2>Регистрация</h2>
 
-<c:if test="${not empty requestScope.errors}">
-    <c:forEach var="error" items="${requestScope.errors}">
-        <span>${error}</span>
-        <br>
-    </c:forEach>
-</c:if>
+    <c:if test="${not empty requestScope.errors}">
+        <div class="error">
+            <ul>
+                <c:forEach var="error" items="${requestScope.errors}">
+                    <li>${error}</li>
+                </c:forEach>
+            </ul>
+        </div>
+    </c:if>
 
-<form action="/registration" method="post">
-    <div>
-        <label>nickname:</label><br>
-        <input type="text" name="nickname" id="nickname" required>
+    <form action="/registration" method="post">
+
+        <div class="form-group">
+            <label>Никнейм</label>
+            <input type="text" name="nickname" >
+        </div>
+
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" name="email" >
+        </div>
+
+        <div class="form-group">
+            <label>Пароль</label>
+            <input type="password" name="password" required>
+        </div>
+
+        <button type="submit">Зарегистрироваться</button>
+    </form>
+
+    <div class="auth-footer">
+        Уже есть аккаунт?
+        <a href="/login">Войти</a>
     </div>
-    <br>
-    <div>
-        <label>Email:</label><br>
-        <input type="email" name="email" id="email" required>
-    </div>
-    <br>
-    <div>
-        <label>Пароль:</label><br>
-        <input type="password" name="password" id="password"required>
-    </div>
-    <br>
-    <button type="submit">Зарегистрироваться</button>
-</form>
+</div>
 
 </body>
 </html>
