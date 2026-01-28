@@ -30,7 +30,7 @@ public class RegistrationServlet extends HttpServlet {
                     req.getParameter("email"),
                     req.getParameter("password")
             ));
-            req.getRequestDispatcher("/login").forward(req, resp);
+            resp.sendRedirect("/login");
         } catch (RegistrationException e) {
             req.setAttribute("errors", e.getErrors());
             doGet(req, resp);
