@@ -11,7 +11,10 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet("/deleteNote")
+import static by.wotiwan.utils.UrlPath.DELETE_NOTE;
+import static by.wotiwan.utils.UrlPath.HOME;
+
+@WebServlet(DELETE_NOTE)
 public class DeleteNoteServlet extends HttpServlet {
 
     private final static NoteService noteService = NoteService.getInstance();
@@ -24,6 +27,6 @@ public class DeleteNoteServlet extends HttpServlet {
         // Обращение к сервису для удаления заметки
         noteService.deleteNote(deleteNoteDto);
         // После чего снова открываем главную страницу
-        resp.sendRedirect("/home");
+        resp.sendRedirect(HOME);
     }
 }

@@ -13,7 +13,10 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet("/login")
+import static by.wotiwan.utils.UrlPath.HOME;
+import static by.wotiwan.utils.UrlPath.LOGIN;
+
+@WebServlet(LOGIN)
 public class LoginServlet extends HttpServlet {
     UserService userService = UserService.getInstance();
     @Override
@@ -21,10 +24,10 @@ public class LoginServlet extends HttpServlet {
         // Проверяем, не авторизован ли уже пользователь
         // в случае если пользователь уже авторизован - отправляем его на главную страницу
         if (req.getSession().getAttribute("user") != null) {
-            resp.sendRedirect("/home");
+            resp.sendRedirect(HOME);
         } else {
             // Иначе - отправляем его на страницу авторизации
-            req.getRequestDispatcher(JspHelper.getPath("login")).forward(req, resp);
+            req.getRequestDispatcher(JspHelper.getPath(LOGIN)).forward(req, resp);
         }
     }
 
@@ -36,7 +39,7 @@ public class LoginServlet extends HttpServlet {
             UserDto userDto = userService.login(loginUserDto);
             // При успешном логине добавляем информацию о юзере в сессию и отправляем на главную страницу
             req.getSession().setAttribute("user", userDto);
-            resp.sendRedirect("/home");
+            resp.sendRedirect(HOME);
         } catch (LoginException e) {
             req.setAttribute("errors", "email or password is incorrect!");
             doGet(req, resp);

@@ -8,7 +8,10 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet("/logout")
+import static by.wotiwan.utils.UrlPath.LOGIN;
+import static by.wotiwan.utils.UrlPath.LOGOUT;
+
+@WebServlet(LOGOUT)
 public class LogoutServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -19,6 +22,6 @@ public class LogoutServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // Сюда приходит запрос на разлогин, соответсвтенно убираем текущую сессию и редиректим на логин
         req.getSession().invalidate();
-        resp.sendRedirect("/login");
+        resp.sendRedirect(LOGIN);
     }
 }

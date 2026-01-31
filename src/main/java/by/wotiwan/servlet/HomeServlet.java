@@ -13,7 +13,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/home")
+import static by.wotiwan.utils.UrlPath.HOME;
+
+@WebServlet(HOME)
 public class HomeServlet extends HttpServlet {
     private final static NoteService noteService = NoteService.getInstance();
     @Override
@@ -24,6 +26,6 @@ public class HomeServlet extends HttpServlet {
 
         req.setAttribute("notes", notes);
 
-        req.getRequestDispatcher(JspHelper.getPath("home")).forward(req, resp);
+        req.getRequestDispatcher(JspHelper.getPath(HOME)).forward(req, resp);
     }
 }

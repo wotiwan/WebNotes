@@ -11,7 +11,10 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet("/createNote")
+import static by.wotiwan.utils.UrlPath.CREATE_NOTE;
+import static by.wotiwan.utils.UrlPath.HOME;
+
+@WebServlet(CREATE_NOTE)
 public class CreateNoteServlet extends HttpServlet {
 
     private final static NoteService noteService = NoteService.getInstance();
@@ -28,6 +31,6 @@ public class CreateNoteServlet extends HttpServlet {
 
         noteService.createNote(createNoteDto);
 
-        resp.sendRedirect("/home");
+        resp.sendRedirect(HOME);
     }
 }

@@ -12,14 +12,17 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet("/registration")
+import static by.wotiwan.utils.UrlPath.LOGIN;
+import static by.wotiwan.utils.UrlPath.REGISTER;
+
+@WebServlet(REGISTER)
 public class RegistrationServlet extends HttpServlet {
 
     private final static UserService userService = UserService.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher(JspHelper.getPath("registration")).forward(req, resp);
+        req.getRequestDispatcher(JspHelper.getPath(REGISTER)).forward(req, resp);
     }
 
     @Override
@@ -31,7 +34,7 @@ public class RegistrationServlet extends HttpServlet {
                     req.getParameter("email"),
                     req.getParameter("password")
             ));
-            resp.sendRedirect("/login");
+            resp.sendRedirect(LOGIN);
         } catch (RegistrationException e) {
             req.setAttribute("errors", e.getErrors());
             doGet(req, resp);
