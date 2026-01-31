@@ -24,9 +24,15 @@
     <div class="top-bar">
         <h2>Мои заметки</h2>
 
-        <form action="/logout" method="post">
-            <button class="logout-btn" type="submit">Выйти</button>
-        </form>
+        <div>
+            <div class="username">
+                <p>${user.nickname()}</p>
+            </div>
+            <form action="/logout" method="post">
+                <button class="logout-btn" type="submit">Выйти</button>
+            </form>
+        </div>
+
     </div>
 
     <div class="create-box">

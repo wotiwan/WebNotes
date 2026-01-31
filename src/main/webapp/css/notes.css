@@ -125,3 +125,6 @@ textarea:focus {
     color: #6b7280;
     font-style: italic;
 }
+.username {
+    text-align: center;
+}
