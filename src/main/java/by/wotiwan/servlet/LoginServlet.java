@@ -4,6 +4,7 @@ import by.wotiwan.dto.LoginUserDto;
 import by.wotiwan.dto.UserDto;
 import by.wotiwan.exception.LoginException;
 import by.wotiwan.service.UserService;
+import by.wotiwan.utils.JspHelper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -23,7 +24,7 @@ public class LoginServlet extends HttpServlet {
             resp.sendRedirect("/home");
         } else {
             // Иначе - отправляем его на страницу авторизации
-            req.getRequestDispatcher("/WEB-INF/login.jsp").forward(req, resp);
+            req.getRequestDispatcher(JspHelper.getPath("login")).forward(req, resp);
         }
     }
 

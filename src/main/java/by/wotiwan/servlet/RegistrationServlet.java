@@ -3,6 +3,7 @@ package by.wotiwan.servlet;
 import by.wotiwan.dto.CreateUserDto;
 import by.wotiwan.exception.RegistrationException;
 import by.wotiwan.service.UserService;
+import by.wotiwan.utils.JspHelper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -18,7 +19,7 @@ public class RegistrationServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/WEB-INF/registration.jsp").forward(req, resp);
+        req.getRequestDispatcher(JspHelper.getPath("registration")).forward(req, resp);
     }
 
     @Override
