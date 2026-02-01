@@ -57,6 +57,11 @@
                 <input type="hidden" name="id" value="${note.id()}">
                 <button class="delete-btn" type="submit">Удалить</button>
             </form>
+            <form action="/updateNote" method="post">
+                <input type="hidden" name="id" value="${note.id()}">
+                <input type="textarea" name="description">
+                <button class="delete-btn" type="submit">Изменить</button>
+            </form>
         </div>
     </c:forEach>
 </div>
