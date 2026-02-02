@@ -2,6 +2,7 @@ package by.wotiwan.servlet;
 
 import by.wotiwan.dto.NoteDto;
 import by.wotiwan.dto.UserDto;
+import by.wotiwan.exception.LoadNotesException;
 import by.wotiwan.service.NoteService;
 import by.wotiwan.utils.JspHelper;
 import jakarta.servlet.ServletException;
@@ -22,9 +23,13 @@ public class HomeServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         UserDto user = (UserDto) req.getSession().getAttribute("user");
-        List<NoteDto> notes = noteService.loadNotes(user.id());
 
-        req.setAttribute("notes", notes);
+        try {
+            List<NoteDto> notes = noteService.loadNotes(user.id());
+            req.setAttribute("notes", notes);
+        } catch (LoadNotesException e) {
+            req.setAttribute("errors", "Unable to load notes, try again later.");
+        }
 
         req.getRequestDispatcher(JspHelper.getPath(HOME)).forward(req, resp);
     }
