@@ -2,6 +2,7 @@ package by.wotiwan.dao;
 
 import by.wotiwan.dto.UserFilter;
 import by.wotiwan.entity.User;
+import by.wotiwan.exception.DaoException;
 import by.wotiwan.exception.DuplicateEmailException;
 import by.wotiwan.exception.DuplicateNicknameException;
 import by.wotiwan.utils.ConnectionManager;
@@ -73,7 +74,7 @@ public class UserDao implements Dao<User, Long, UserFilter> {
             if (e.getMessage().contains("users_nickname_key")) {
                 throw new DuplicateNicknameException();
             }
-            throw new RuntimeException(e);
+            throw new DaoException(e);
         }
 
     }
@@ -96,7 +97,7 @@ public class UserDao implements Dao<User, Long, UserFilter> {
             return user;
 
         } catch (SQLException e) {
-            throw new RuntimeException(e); // TODO: своё искл
+            throw new DaoException(e);
         }
 
     }
@@ -118,7 +119,7 @@ public class UserDao implements Dao<User, Long, UserFilter> {
             return user;
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DaoException(e);
         }
 
     }
@@ -128,7 +129,7 @@ public class UserDao implements Dao<User, Long, UserFilter> {
         User user = new User();
 
         try (Connection connection = connectionManager.get();
-             PreparedStatement statement = connection.prepareStatement(FIND_BY_EMAIL_PASSWORD_SQL)) {
+             PreparedStatement statement = connection.prepareStatement(FIND_BY_EMAIL_SQL)) {
 
             statement.setString(1, email);
 
@@ -140,7 +141,7 @@ public class UserDao implements Dao<User, Long, UserFilter> {
             return user;
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DaoException(e);
         }
 
     }
@@ -161,7 +162,7 @@ public class UserDao implements Dao<User, Long, UserFilter> {
             return users;
 
         } catch (SQLException e) {
-            throw new RuntimeException(e); // TODO: своё искл
+            throw new DaoException(e);
         }
 
     }
@@ -185,7 +186,7 @@ public class UserDao implements Dao<User, Long, UserFilter> {
             return statement.executeUpdate() > 0;
 
         } catch (SQLException e) {
-            throw new RuntimeException(e); // TODO: своё искл
+            throw new DaoException(e);
         }
 
     }
@@ -201,7 +202,7 @@ public class UserDao implements Dao<User, Long, UserFilter> {
 
 
         } catch (SQLException e) {
-            throw new RuntimeException(e); // TODO: своё искл
+            throw new DaoException(e);
         }
 
     }

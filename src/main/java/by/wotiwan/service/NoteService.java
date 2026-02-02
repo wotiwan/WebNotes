@@ -45,7 +45,7 @@ public class NoteService {
 
         List<String> validationErrors = NoteCreateValidator.validate(createNoteDto);
 
-        if (validationErrors.isEmpty()) {
+        if (!validationErrors.isEmpty()) {
             throw new CreateNoteException(validationErrors);
         }
 
