@@ -5,10 +5,7 @@ import by.wotiwan.dto.CreateUserDto;
 import by.wotiwan.dto.LoginUserDto;
 import by.wotiwan.dto.UserDto;
 import by.wotiwan.entity.User;
-import by.wotiwan.exception.DuplicateEmailException;
-import by.wotiwan.exception.DuplicateNicknameException;
-import by.wotiwan.exception.LoginException;
-import by.wotiwan.exception.RegistrationException;
+import by.wotiwan.exception.*;
 import by.wotiwan.mapper.CreateUserMapper;
 import by.wotiwan.mapper.UserMapper;
 import by.wotiwan.utils.PasswordUtil;
@@ -42,27 +39,31 @@ public class UserService {
             throw new RegistrationException("This email alredy taken!");
         } catch (DuplicateNicknameException e) {
             throw new RegistrationException("This nickname alredy taken!");
+        } catch (DaoException e) {
+            throw new RegistrationException("Failed to create account, try again later.");
         }
     }
 
     public UserDto login(LoginUserDto loginUserDto) {
         // Сначала находим пользователя по email
-        User foundUser = userDao.findByEmail(loginUserDto.email());
+        try {
+            User foundUser = userDao.findByEmail(loginUserDto.email());
+            // Если пользователь найден - проверяем пароль по хешу
+            if (foundUser.getId() != null) {
 
-        // Если пользователь найден - проверяем пароль по хешу
-        if (foundUser.getId() != null) {
+                if (PasswordUtil.checkPassword(loginUserDto.password(), foundUser.getPasswordHash())) {
+                    // Если хеши совпадают - авторизация успешна, возвращаем UserDto
+                    return userMapper.mapFrom(foundUser);
+                } else {
+                    throw new LoginException("email or password is incorrect!");
+                }
 
-            if (PasswordUtil.checkPassword(loginUserDto.password(), foundUser.getPasswordHash())) {
-                // Если хеши совпадают - авторизация успешна, возвращаем UserDto
-                return userMapper.mapFrom(foundUser);
             } else {
-                throw new LoginException();
+                throw new LoginException("email or password is incorrect!");
             }
-
-        } else {
-            throw new LoginException();
+        } catch (DaoException e) {
+            throw new LoginException("Authentication unavailable, try again later");
         }
-
     }
 
     UserService() {}

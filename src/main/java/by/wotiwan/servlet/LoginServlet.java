@@ -41,7 +41,7 @@ public class LoginServlet extends HttpServlet {
             req.getSession().setAttribute("user", userDto);
             resp.sendRedirect(HOME);
         } catch (LoginException e) {
-            req.setAttribute("errors", "email or password is incorrect!");
+            req.setAttribute("errors", e.getERRORS());
             doGet(req, resp);
         }
 

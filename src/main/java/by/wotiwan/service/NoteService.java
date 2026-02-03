@@ -3,15 +3,14 @@ package by.wotiwan.service;
 import by.wotiwan.dao.NoteDao;
 import by.wotiwan.dto.*;
 import by.wotiwan.entity.Note;
-import by.wotiwan.exception.CreateNoteException;
-import by.wotiwan.exception.DaoException;
-import by.wotiwan.exception.LoadNotesException;
+import by.wotiwan.exception.*;
 import by.wotiwan.mapper.CreateNoteMapper;
 import by.wotiwan.mapper.CreateUserMapper;
 import by.wotiwan.mapper.NoteMapper;
 import by.wotiwan.mapper.UpdateNoteMapper;
 import by.wotiwan.validator.NoteCreateValidator;
 import by.wotiwan.utils.NotesPaginator;
+import by.wotiwan.validator.UpdateNoteValidator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,20 +29,34 @@ public class NoteService {
     public static NoteService getInstance() {return INSTANCE;}
 
     public boolean updateNote(UpdateNoteDto updateNoteDto) {
-        return noteDao.update(updateNoteMapper.mapFrom(updateNoteDto));
-    }
 
-    public void deleteNote(DeleteNoteDto deleteNoteDto) {
+        List<String> validationErrors = UpdateNoteValidator.validate(updateNoteDto);
 
-        // TODO: Добавить обработку ошибок
-        if (Objects.equals(noteDao.findById(Long.parseLong(deleteNoteDto.id())).getUserId(), deleteNoteDto.user_id())) {
-            noteDao.delete(Long.parseLong(deleteNoteDto.id()));
+        if (!validationErrors.isEmpty()) {
+            throw new UpdateNoteException(validationErrors);
+        }
+        try {
+            return noteDao.update(updateNoteMapper.mapFrom(updateNoteDto));
+        } catch (DaoException e) {
+            throw new UpdateNoteException("Internal server error! Could not save note");
         }
 
     }
 
+    public void deleteNote(DeleteNoteDto deleteNoteDto) {
+
+        try {
+            if (Objects.equals(noteDao.findById(Long.parseLong(deleteNoteDto.id())).getUserId(), deleteNoteDto.user_id())) {
+                noteDao.delete(Long.parseLong(deleteNoteDto.id()));
+            }
+        } catch (DaoException e) {
+            throw new DeleteNoteException();
+        }
+
+
+    }
+
     public NoteDto createNote(CreateNoteDto createNoteDto) {
-        // TODO: добавить валидатор // ГОТОВО
 
         List<String> validationErrors = NoteCreateValidator.validate(createNoteDto);
 
@@ -63,13 +76,19 @@ public class NoteService {
     // Метод для расчёта кол-ва страниц заметок пользователя
     public int getNotesPagesCount(Long userId) {
         int notesPerPage = NotesPaginator.getLimit();
-        int notesCount = noteDao.findNotesCount(userId);
-
-        if (notesCount % notesPerPage > 0) {
-            return notesCount / notesPerPage + 1;
-        } else {
-            return notesCount / notesPerPage;
+        try {
+            int notesCount = noteDao.findNotesCount(userId);
+            if (notesCount % notesPerPage > 0) {
+                return notesCount / notesPerPage + 1;
+            } else {
+                return notesCount / notesPerPage;
+            }
+        } catch (DaoException e) {
+            // Пользователю необязательно знать что мы не смогли загрузить кол-во страниц, вернём просто дефолт
+            // При этом можно залогировать
+            return 1;
         }
+
     }
 
     public List<NoteDto> loadNotes(Long userId, int currentPage) {

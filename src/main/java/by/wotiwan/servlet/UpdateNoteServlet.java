@@ -2,6 +2,7 @@ package by.wotiwan.servlet;
 
 import by.wotiwan.dto.UpdateNoteDto;
 import by.wotiwan.dto.UserDto;
+import by.wotiwan.exception.UpdateNoteException;
 import by.wotiwan.service.NoteService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -26,8 +27,11 @@ public class UpdateNoteServlet extends HttpServlet {
                 req.getParameter("id"),
                 req.getParameter("description")
         );
-
-        noteService.updateNote(updateNoteDto);
+        try {
+            noteService.updateNote(updateNoteDto);
+        } catch (UpdateNoteException e) {
+            req.getSession().setAttribute("errors", e.getERRORS());
+        }
 
         resp.sendRedirect(HOME);
 

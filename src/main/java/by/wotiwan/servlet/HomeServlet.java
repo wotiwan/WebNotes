@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static by.wotiwan.utils.UrlPath.HOME;
@@ -39,17 +40,21 @@ public class HomeServlet extends HttpServlet {
         // Если пользователь не нажимал на кнопки пагинации - параметр будет null, отдаём просто первую страницу
         int curPage = pageParam == null ? 1 : Integer.parseInt(pageParam);
 
-        // Загружаем заметки текущей страницы
+
         try {
+            // Загружаем заметки текущей страницы
             List<NoteDto> notes = noteService.loadNotes(user.id(), curPage);
+
+            // Возвращаем полученные заметки текущей страницы и номер текущей страницы для фронта
             req.setAttribute("notes", notes);
+            req.setAttribute("currentPage", curPage);
         } catch (LoadNotesException e) {
             req.setAttribute("errors", "Unable to load notes, try again later.");
         }
-      
-        // Возвращаем полученные заметки текущей страницы и номер текущей страницы для фронта
-        req.setAttribute("notes", notes);
-        req.setAttribute("currentPage", curPage);
+
         req.getRequestDispatcher(JspHelper.getPath(HOME)).forward(req, resp);
+
+        // Удаляем полученные из других сервлетов ошибки, т.к. показать их нужно один раз, а не каждый раз пока активна сессия
+        session.removeAttribute("errors");
     }
 }

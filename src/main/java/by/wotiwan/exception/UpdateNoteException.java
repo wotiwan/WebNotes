@@ -3,16 +3,16 @@ package by.wotiwan.exception;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LoginException extends RuntimeException {
+public class UpdateNoteException extends RuntimeException {
 
     private final List<String> ERRORS;
 
-    public LoginException(String message) {
+    public UpdateNoteException(String message) {
         ERRORS = new ArrayList<>();
         ERRORS.add(message);
     }
 
-    public LoginException(List<String> errors) {
+    public UpdateNoteException(List<String> errors) {
         this.ERRORS = errors;
     }
 

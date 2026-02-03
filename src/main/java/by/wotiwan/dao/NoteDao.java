@@ -138,8 +138,6 @@ public class NoteDao implements Dao<Note, Long, NoteFilter> {
                 statement.setObject(i+1, params.get(i));
             }
 
-            System.out.println(statement);
-
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
@@ -149,7 +147,7 @@ public class NoteDao implements Dao<Note, Long, NoteFilter> {
             return notes;
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DaoException(e);
         }
 
     }
@@ -218,7 +216,7 @@ public class NoteDao implements Dao<Note, Long, NoteFilter> {
             } else return 0; // Точно ли так??
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DaoException(e);
         }
 
     }

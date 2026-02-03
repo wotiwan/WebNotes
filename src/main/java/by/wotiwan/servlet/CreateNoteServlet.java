@@ -23,7 +23,7 @@ public class CreateNoteServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // TODO: Добавить проверки создания
+
         HttpSession session = req.getSession();
         UserDto user = (UserDto) session.getAttribute("user"); // Находим id пользователя
 
@@ -35,12 +35,11 @@ public class CreateNoteServlet extends HttpServlet {
         // Пытаемся создать заметку - если есть ошибка валидации или ошибка бд - сообщаем об этом пользователю
         try {
             noteService.createNote(createNoteDto);
+            // Обновляем кол-во страниц с заметками
+            session.setAttribute("notesPages", noteService.getNotesPagesCount(user.id()));
         } catch (CreateNoteException e) {
-            req.setAttribute("errors", e.getERRORS());
+            session.setAttribute("errors", e.getERRORS());
         }
-
-        // Обновляем кол-во страниц с заметками
-        session.setAttribute("notesPages", noteService.getNotesPagesCount(user.id()));
 
         resp.sendRedirect(HOME);
     }

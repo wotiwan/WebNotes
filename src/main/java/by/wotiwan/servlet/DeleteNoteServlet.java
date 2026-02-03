@@ -2,6 +2,7 @@ package by.wotiwan.servlet;
 
 import by.wotiwan.dto.DeleteNoteDto;
 import by.wotiwan.dto.UserDto;
+import by.wotiwan.exception.DeleteNoteException;
 import by.wotiwan.service.NoteService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -29,10 +30,13 @@ public class DeleteNoteServlet extends HttpServlet {
         // Заполняем dto для удаления заметки id этой заметки и id пользователя
         DeleteNoteDto deleteNoteDto = new DeleteNoteDto(req.getParameter("id"), user.id());
         // Обращение к сервису для удаления заметки
-        noteService.deleteNote(deleteNoteDto);
-
-        // Обновляем кол-во страниц с заметками
-        session.setAttribute("notesPages", noteService.getNotesPagesCount(user.id()));
+        try {
+            noteService.deleteNote(deleteNoteDto);
+            // Обновляем кол-во страниц с заметками
+            session.setAttribute("notesPages", noteService.getNotesPagesCount(user.id()));
+        } catch (DeleteNoteException e) {
+            req.setAttribute("errors", "Internal server error! Could not delete note");
+        }
 
         // После чего снова открываем главную страницу
         resp.sendRedirect(HOME);

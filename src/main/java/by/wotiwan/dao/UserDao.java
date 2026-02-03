@@ -67,13 +67,6 @@ public class UserDao implements Dao<User, Long, UserFilter> {
             return user;
 
         } catch (SQLException e) {
-
-            if (e.getMessage().contains("users_email_key")) {
-                throw new DuplicateEmailException();
-            }
-            if (e.getMessage().contains("users_nickname_key")) {
-                throw new DuplicateNicknameException();
-            }
             throw new DaoException(e);
         }
 

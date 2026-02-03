@@ -32,6 +32,25 @@
         </div>
     </div>
 
+    <c:if test="${not empty requestScope.errors}">
+        <div class="error">
+            <ul>
+                <c:forEach var="error" items="${requestScope.errors}">
+                    <li>${error}</li>
+                </c:forEach>
+            </ul>
+        </div>
+    </c:if>
+    <c:if test="${not empty sessionScope.errors}">
+        <div class="error">
+            <ul>
+                <c:forEach var="error" items="${sessionScope.errors}">
+                    <li>${error}</li>
+                </c:forEach>
+            </ul>
+        </div>
+    </c:if>
+
     <!-- ===== Создание заметки ===== -->
     <div class="create-box">
         <h3>Новая заметка</h3>
