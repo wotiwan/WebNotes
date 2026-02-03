@@ -9,6 +9,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
@@ -22,8 +23,9 @@ public class CreateNoteServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // TODO: Добавить проверки создания // ГОТОВО
-        UserDto user = (UserDto) req.getSession().getAttribute("user"); // Находим id пользователя
+        // TODO: Добавить проверки создания
+        HttpSession session = req.getSession();
+        UserDto user = (UserDto) session.getAttribute("user"); // Находим id пользователя
 
         CreateNoteDto createNoteDto = new CreateNoteDto(
                 user.id(),
@@ -36,6 +38,9 @@ public class CreateNoteServlet extends HttpServlet {
         } catch (CreateNoteException e) {
             req.setAttribute("errors", e.getERRORS());
         }
+
+        // Обновляем кол-во страниц с заметками
+        session.setAttribute("notesPages", noteService.getNotesPagesCount(user.id()));
 
         resp.sendRedirect(HOME);
     }

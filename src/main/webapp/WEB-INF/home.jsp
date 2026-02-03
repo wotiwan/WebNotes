@@ -1,5 +1,6 @@
 <%@ page isELIgnored="false" %>
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
+
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -9,18 +10,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Заметки</title>
+
+    <!-- Основные стили -->
     <link rel="stylesheet" href="/css/notes.css">
-    <style>
-        body { font-family: Arial, sans-serif; margin: 40px; }
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .note { border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; border-radius: 6px; }
-        .note form { margin-top: 8px; }
-        textarea { width: 100%; min-height: 60px; }
-        button { padding: 6px 12px; cursor: pointer; }
-    </style>
 </head>
 <body>
+
 <div class="page">
+
+    <!-- ===== Верхняя панель ===== -->
     <div class="top-bar">
         <h2>Мои заметки</h2>
 
@@ -32,17 +30,21 @@
                 <button class="logout-btn" type="submit">Выйти</button>
             </form>
         </div>
-
     </div>
 
+    <!-- ===== Создание заметки ===== -->
     <div class="create-box">
         <h3>Новая заметка</h3>
         <form action="/createNote" method="post">
-            <textarea name="description" placeholder="Введите описание заметки..." required></textarea><br><br>
+            <textarea name="description"
+                      placeholder="Введите описание заметки..."
+                      required></textarea>
+            <br><br>
             <button type="submit">Создать заметку</button>
         </form>
     </div>
 
+    <!-- ===== Список заметок ===== -->
     <h3 class="notes-title">Существующие заметки</h3>
 
     <c:if test="${empty notes}">
@@ -50,20 +52,65 @@
     </c:if>
 
     <c:forEach var="note" items="${notes}">
-        <div class="note">
-            <div class="note-text">${note.noteDescription()}</div>
+        <div class="note" id="note-${note.id()}">
 
-            <form action="/deleteNote" method="post">
+            <!-- Текст заметки -->
+            <div class="note-text" id="text-${note.id()}">
+                ${note.noteDescription()}
+            </div>
+
+            <!-- Форма редактирования (скрыта) -->
+            <form action="/updateNote"
+                  method="post"
+                  class="edit-form"
+                  id="form-${note.id()}"
+                  style="display: none;">
+
                 <input type="hidden" name="id" value="${note.id()}">
-                <button class="delete-btn" type="submit">Удалить</button>
+
+                <textarea name="description" required>${note.noteDescription()}</textarea>
+
+                <button type="submit">Сохранить</button>
             </form>
-            <form action="/updateNote" method="post">
-                <input type="hidden" name="id" value="${note.id()}">
-                <input type="textarea" name="description">
-                <button class="delete-btn" type="submit">Изменить</button>
-            </form>
+
+            <!-- Кнопки -->
+            <div class="note-actions">
+                <button type="button" onclick="editNote(${note.id()})">
+                    Изменить
+                </button>
+
+                <form action="/deleteNote" method="post" style="display:inline;">
+                    <input type="hidden" name="id" value="${note.id()}">
+                    <button class="delete-btn" type="submit">Удалить</button>
+                </form>
+            </div>
+
         </div>
     </c:forEach>
+
+    <!-- ===== Пагинация ===== -->
+    <c:if test="${notesPages > 1}">
+        <div class="pagination">
+            <!-- Номера страниц -->
+            <c:forEach begin="1" end="${notesPages}" var="i">
+                <c:choose>
+                    <c:when test="${i == currentPage}">
+                        <span class="current">${i}</span>
+                    </c:when>
+                    <c:otherwise>
+                        <a href="?page=${i}">${i}</a>
+                    </c:otherwise>
+                </c:choose>
+            </c:forEach>
+        </div>
+    </c:if>
+
 </div>
+<script>
+    function editNote(id) {
+        document.getElementById("text-" + id).style.display = "none";
+        document.getElementById("form-" + id).style.display = "block";
+    }
+</script>
 </body>
 </html>
