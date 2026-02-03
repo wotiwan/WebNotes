@@ -11,6 +11,7 @@ import by.wotiwan.exception.LoginException;
 import by.wotiwan.exception.RegistrationException;
 import by.wotiwan.mapper.CreateUserMapper;
 import by.wotiwan.mapper.UserMapper;
+import by.wotiwan.utils.PasswordUtil;
 import by.wotiwan.validator.UserCreateValidator;
 
 import java.util.List;
@@ -26,24 +27,38 @@ public class UserService {
 
         // Валидация входных данных
         List<String> errors = UserCreateValidator.validate(createUserDto);
-        if (errors.size() > 0) {
+        if (!errors.isEmpty()) {
             throw new RegistrationException(errors);
         }
 
+        // Хэшируем пароль
+        User user = createUserMapper.mapFrom(createUserDto);
+        user.setPasswordHash(PasswordUtil.hashPassword(user.getPasswordHash()));
+
         try { // В случае если email или nickname уже существуют, бросим ошибку
-            return userMapper.mapFrom(userDao.save(createUserMapper.mapFrom(createUserDto)));
+            // мапим полученный от dao entity в UserDto
+            return userMapper.mapFrom(userDao.save(user));
         } catch (DuplicateEmailException e) {
-            throw new RegistrationException("This email alredy taken!"); // TODO: Можно добавить локализацию, как нибудь через application.utils
+            throw new RegistrationException("This email alredy taken!");
         } catch (DuplicateNicknameException e) {
             throw new RegistrationException("This nickname alredy taken!");
         }
     }
 
     public UserDto login(LoginUserDto loginUserDto) {
-        User foundUser = userDao.findByEmailPassword(loginUserDto.email(), loginUserDto.password());
-        System.out.println(foundUser);
+        // Сначала находим пользователя по email
+        User foundUser = userDao.findByEmail(loginUserDto.email());
+
+        // Если пользователь найден - проверяем пароль по хешу
         if (foundUser.getId() != null) {
-            return userMapper.mapFrom(foundUser);
+
+            if (PasswordUtil.checkPassword(loginUserDto.password(), foundUser.getPasswordHash())) {
+                // Если хеши совпадают - авторизация успешна, возвращаем UserDto
+                return userMapper.mapFrom(foundUser);
+            } else {
+                throw new LoginException();
+            }
+
         } else {
             throw new LoginException();
         }

@@ -2,6 +2,7 @@ package by.wotiwan.servlet;
 
 import by.wotiwan.dto.NoteDto;
 import by.wotiwan.dto.UserDto;
+import by.wotiwan.exception.LoadNotesException;
 import by.wotiwan.service.NoteService;
 import by.wotiwan.utils.JspHelper;
 import jakarta.servlet.ServletException;
@@ -39,8 +40,13 @@ public class HomeServlet extends HttpServlet {
         int curPage = pageParam == null ? 1 : Integer.parseInt(pageParam);
 
         // Загружаем заметки текущей страницы
-        List<NoteDto> notes = noteService.loadNotes(user.id(), curPage);
-
+        try {
+            List<NoteDto> notes = noteService.loadNotes(user.id(), curPage);
+            req.setAttribute("notes", notes);
+        } catch (LoadNotesException e) {
+            req.setAttribute("errors", "Unable to load notes, try again later.");
+        }
+      
         // Возвращаем полученные заметки текущей страницы и номер текущей страницы для фронта
         req.setAttribute("notes", notes);
         req.setAttribute("currentPage", curPage);

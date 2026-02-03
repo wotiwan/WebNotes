@@ -3,10 +3,14 @@ package by.wotiwan.service;
 import by.wotiwan.dao.NoteDao;
 import by.wotiwan.dto.*;
 import by.wotiwan.entity.Note;
+import by.wotiwan.exception.CreateNoteException;
+import by.wotiwan.exception.DaoException;
+import by.wotiwan.exception.LoadNotesException;
 import by.wotiwan.mapper.CreateNoteMapper;
 import by.wotiwan.mapper.CreateUserMapper;
 import by.wotiwan.mapper.NoteMapper;
 import by.wotiwan.mapper.UpdateNoteMapper;
+import by.wotiwan.validator.NoteCreateValidator;
 import by.wotiwan.utils.NotesPaginator;
 
 import java.util.ArrayList;
@@ -39,9 +43,21 @@ public class NoteService {
     }
 
     public NoteDto createNote(CreateNoteDto createNoteDto) {
-        // TODO: добавить валидатор
-        var note = noteDao.save(createNoteMapper.mapFrom(createNoteDto));
-        return noteMapper.mapFrom(note);
+        // TODO: добавить валидатор // ГОТОВО
+
+        List<String> validationErrors = NoteCreateValidator.validate(createNoteDto);
+
+        if (!validationErrors.isEmpty()) {
+            throw new CreateNoteException(validationErrors);
+        }
+
+        try {
+            var note = noteDao.save(createNoteMapper.mapFrom(createNoteDto));
+            return noteMapper.mapFrom(note);
+        } catch (DaoException e) {
+            throw new CreateNoteException("Internal server error! Could not save note");
+        }
+
     }
 
     // Метод для расчёта кол-ва страниц заметок пользователя
@@ -69,10 +85,13 @@ public class NoteService {
                 NotesPaginator.getLimit(),
                 NotesPaginator.getOffset(currentPage)
         );
-
-        List<Note> notes = noteDao.findAll(notesFilter);
-
-        return notes.stream().map(noteMapper::mapFrom).collect(Collectors.toList());
+        
+        try {
+            List<Note> notes = noteDao.findAll(notesFilter);
+            return notes.stream().map(noteMapper::mapFrom).collect(Collectors.toList());
+        } catch (DaoException e) { // Если случилась какая-то ошибка в бд, то сообщаем пользователю
+            throw new LoadNotesException();
+        }
 
         // ПАГИНАЦИЯ:
         // в аргументы метода добавляем текущую страницу

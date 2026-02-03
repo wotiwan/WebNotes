@@ -2,6 +2,7 @@ package by.wotiwan.servlet;
 
 import by.wotiwan.dto.CreateNoteDto;
 import by.wotiwan.dto.UserDto;
+import by.wotiwan.exception.CreateNoteException;
 import by.wotiwan.service.NoteService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -31,7 +32,12 @@ public class CreateNoteServlet extends HttpServlet {
                 req.getParameter("description")
         );
 
-        noteService.createNote(createNoteDto);
+        // Пытаемся создать заметку - если есть ошибка валидации или ошибка бд - сообщаем об этом пользователю
+        try {
+            noteService.createNote(createNoteDto);
+        } catch (CreateNoteException e) {
+            req.setAttribute("errors", e.getERRORS());
+        }
 
         // Обновляем кол-во страниц с заметками
         session.setAttribute("notesPages", noteService.getNotesPagesCount(user.id()));

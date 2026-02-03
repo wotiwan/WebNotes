@@ -2,6 +2,7 @@ package by.wotiwan.dao;
 
 import by.wotiwan.dto.NoteFilter;
 import by.wotiwan.entity.Note;
+import by.wotiwan.exception.DaoException;
 import by.wotiwan.utils.ConnectionManager;
 
 import java.sql.*;
@@ -64,7 +65,7 @@ public class NoteDao implements Dao<Note, Long, NoteFilter> {
             return note;
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DaoException(e);
         }
 
     }
@@ -88,7 +89,7 @@ public class NoteDao implements Dao<Note, Long, NoteFilter> {
             return note;
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DaoException(e);
         }
     }
 
@@ -169,7 +170,7 @@ public class NoteDao implements Dao<Note, Long, NoteFilter> {
             return notes;
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DaoException(e);
         }
 
     }
@@ -185,7 +186,7 @@ public class NoteDao implements Dao<Note, Long, NoteFilter> {
 
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DaoException(e);
         }
     }
 
@@ -199,7 +200,7 @@ public class NoteDao implements Dao<Note, Long, NoteFilter> {
 
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DaoException(e);
         }
 
     }
