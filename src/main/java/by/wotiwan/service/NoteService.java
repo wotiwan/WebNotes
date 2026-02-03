@@ -1,18 +1,17 @@
 package by.wotiwan.service;
 
 import by.wotiwan.dao.NoteDao;
-import by.wotiwan.dto.CreateNoteDto;
-import by.wotiwan.dto.DeleteNoteDto;
-import by.wotiwan.dto.NoteDto;
-import by.wotiwan.dto.UpdateNoteDto;
+import by.wotiwan.dto.*;
 import by.wotiwan.entity.Note;
 import by.wotiwan.mapper.CreateNoteMapper;
 import by.wotiwan.mapper.CreateUserMapper;
 import by.wotiwan.mapper.NoteMapper;
 import by.wotiwan.mapper.UpdateNoteMapper;
+import by.wotiwan.utils.NotesPaginator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class NoteService {
@@ -31,9 +30,12 @@ public class NoteService {
     }
 
     public void deleteNote(DeleteNoteDto deleteNoteDto) {
-        // TODO: Сюда надо добавить проверку на user_id ещё
+
         // TODO: Добавить обработку ошибок
-        noteDao.delete(Long.parseLong(deleteNoteDto.id()));
+        if (Objects.equals(noteDao.findById(Long.parseLong(deleteNoteDto.id())).getUserId(), deleteNoteDto.user_id())) {
+            noteDao.delete(Long.parseLong(deleteNoteDto.id()));
+        }
+
     }
 
     public NoteDto createNote(CreateNoteDto createNoteDto) {
@@ -42,12 +44,41 @@ public class NoteService {
         return noteMapper.mapFrom(note);
     }
 
-    public List<NoteDto> loadNotes(Long userId) {
+    // Метод для расчёта кол-ва страниц заметок пользователя
+    public int getNotesPagesCount(Long userId) {
+        int notesPerPage = NotesPaginator.getLimit();
+        int notesCount = noteDao.findNotesCount(userId);
+
+        if (notesCount % notesPerPage > 0) {
+            return notesCount / notesPerPage + 1;
+        } else {
+            return notesCount / notesPerPage;
+        }
+    }
+
+    public List<NoteDto> loadNotes(Long userId, int currentPage) {
         // От сервлета приходит только id пользователя
         // По этому id загружаем все note
         // Далее мапим их NotesDto и отправляем в ответ сервлету
-        List<Note> notes = noteDao.findAllByUserId(userId);
+
+        var notesFilter = new NoteFilter(
+                null,
+                userId,
+                null,
+                null,
+                NotesPaginator.getLimit(),
+                NotesPaginator.getOffset(currentPage)
+        );
+
+        List<Note> notes = noteDao.findAll(notesFilter);
+
         return notes.stream().map(noteMapper::mapFrom).collect(Collectors.toList());
+
+        // ПАГИНАЦИЯ:
+        // в аргументы метода добавляем текущую страницу
+        // Создан утил класс, который будет в себе хранить кол-во элементов на одной странице + готовить для нас данные
+        // offset + limit
+
     }
 
 }

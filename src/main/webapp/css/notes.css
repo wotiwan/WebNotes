@@ -116,7 +116,6 @@ textarea:focus {
 }
 
 .note-text {
-    white-space: pre-wrap;
     line-height: 1.4;
 }
 
@@ -127,4 +126,61 @@ textarea:focus {
 }
 .username {
     text-align: center;
+}
+
+.note-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.edit-form textarea {
+    margin-bottom: 8px;
+}
+
+/* ===== Пагинация ===== */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin: 30px 0;
+}
+
+/* Обёртка кнопки */
+.pagination a,
+.pagination span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 36px;
+    height: 36px;
+    padding: 0 10px;
+
+    border-radius: 10px;
+    background-color: #f3f4f6;
+    color: #374151;
+    font-weight: 500;
+    text-decoration: none;
+
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Ховер */
+.pagination a:hover {
+    background-color: #e5e7eb;
+}
+
+/* Текущая страница */
+.pagination .current {
+    background-color: #4f46e5;
+    color: #ffffff;
+    cursor: default;
+}
+
+/* Стрелки */
+.pagination a:first-child,
+.pagination a:last-child {
+    font-size: 18px;
 }

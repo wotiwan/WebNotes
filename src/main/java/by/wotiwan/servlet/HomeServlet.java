@@ -9,6 +9,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.List;
@@ -21,11 +22,28 @@ public class HomeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        UserDto user = (UserDto) req.getSession().getAttribute("user");
-        List<NoteDto> notes = noteService.loadNotes(user.id());
+        HttpSession session = req.getSession();
 
+        UserDto user = (UserDto) session.getAttribute("user");
+
+        // Находим кол-во страниц с заметками
+        // При каждом переключении страницы - находим кол-во заметок в бд, по идее пагинация сделала только хуже
+        // По-этому добавим сохранение кол-ва страниц в сессии, обновлять будем только при удалении / добавлении
+        if (session.getAttribute("notesPages") == null) {
+            session.setAttribute("notesPages", noteService.getNotesPagesCount(user.id()));
+        }
+
+        // Узнаём из формы на какой мы странице заметок
+        String pageParam = req.getParameter("page");
+        // Если пользователь не нажимал на кнопки пагинации - параметр будет null, отдаём просто первую страницу
+        int curPage = pageParam == null ? 1 : Integer.parseInt(pageParam);
+
+        // Загружаем заметки текущей страницы
+        List<NoteDto> notes = noteService.loadNotes(user.id(), curPage);
+
+        // Возвращаем полученные заметки текущей страницы и номер текущей страницы для фронта
         req.setAttribute("notes", notes);
-
+        req.setAttribute("currentPage", curPage);
         req.getRequestDispatcher(JspHelper.getPath(HOME)).forward(req, resp);
     }
 }
