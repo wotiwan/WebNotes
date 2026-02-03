@@ -19,7 +19,13 @@
     <h2>Форма входа</h2>
 
     <c:if test="${not empty requestScope.errors}">
-        <div class="error">${requestScope.errors}</div>
+        <div class="error">
+            <ul>
+                <c:forEach var="error" items="${requestScope.errors}">
+                    <li>${error}</li>
+                </c:forEach>
+            </ul>
+        </div>
     </c:if>
 
     <form action="/login" method="post">
